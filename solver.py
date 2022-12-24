@@ -5,20 +5,26 @@ from pyomo.opt import SolverFactory
 model=ConcreteModel()
 
 # variable definition
-model.x=Var(domain=NonNegativeIntegers)
-model.y=Var(domain=NonNegativeIntegers)
+
+model.x0=Var(domain=NonNegativeIntegers)
+model.x1=Var(domain=NonNegativeIntegers)
+model.x2=Var(domain=NonNegativeIntegers)
+model.x3=Var(domain=NonNegativeIntegers)
+
+model.y0=Var(domain=NonNegativeIntegers)
+model.y1=Var(domain=NonNegativeIntegers)
+model.y2=Var(domain=NonNegativeIntegers)
+
 model.z=Var(domain=NonNegativeIntegers)
 
 # objetive function definition
-model.profit=Objective(expr=2*model.x+3*model.y+model.z, sense=maximize)
+model.profit=Objective(expr=0.04*(model.x0+model.x1+model.x2+model.x3)+0.07*(model.y0+model.y1+model.y2)+0.1*model.z, sense=maximize)
 
 # constraints
-model.r1=Constraint(expr=650*model.x+420*model.y+720*model.z<=12000)
-model.r2=Constraint(expr=model.z>=5)
-model.r3=Constraint(expr=model.y>=2)
-model.r4=Constraint(expr=model.y<=5)
-model.r5=Constraint(expr=model.x-5*model.y<=0)
-model.r6=Constraint(expr=-model.x+2*model.y<=0)
+model.r0=Constraint(expr=model.x0+model.y0<=2500)
+model.r1=Constraint(expr=model.x1+model.y1<=(2500-model.y0+0.04*model.x0))
+model.r2=Constraint(expr=model.x2+model.y2+model.z<=(2500+0.04*model.x0)-model.y1+0.07*model.y0+0.04*model.x1)
+model.r3=Constraint(expr=model.x2+model.y2+model.z<=((2500+0.04*model.x0)+0.07*model.y0+0.04*model.x1)+0.7*model.y1+0.4*model.x2-model.x3)
 
 # solve problem
 results=SolverFactory('glpk').solve(model)
@@ -28,6 +34,14 @@ results.write()
 if results.solver.status=='ok':
     model.pprint()
     print('Beneficio=', model.profit())
-    print('x=',model.x())
-    print('y=',model.y())
-    print('y=',model.z())
+    
+    print('x0=',model.x0())
+    print('x1=',model.x1())
+    print('x2=',model.x2())
+    print('x3=',model.x3())
+
+    print('y0=',model.y0())
+    print('y1=',model.y1())
+    print('y2=',model.y2())
+
+    print('z=',model.z())
