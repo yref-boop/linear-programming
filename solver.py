@@ -5,7 +5,6 @@ from pyomo.opt import SolverFactory
 model=ConcreteModel()
 
 # variable definition
-
 model.x0=Var(domain=NonNegativeIntegers)
 model.x1=Var(domain=NonNegativeIntegers)
 model.x2=Var(domain=NonNegativeIntegers)
@@ -33,8 +32,8 @@ results.write()
 # show results
 if results.solver.status=='ok':
     model.pprint()
-    print('Beneficio=', model.profit())
-    
+    print('profit=', model.profit())
+
     print('x0=',model.x0())
     print('x1=',model.x1())
     print('x2=',model.x2())
